@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# PyCharm / IDE
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Outputs
+*.png
+*.pdf
+*.npy
+*.npz
