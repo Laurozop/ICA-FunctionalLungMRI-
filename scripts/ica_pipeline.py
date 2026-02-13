@@ -45,7 +45,7 @@ except Exception:
 
 
 # ----------------------------
-# Step (1): Registration + mask + filtering
+# Registration + mask + filtering
 # ----------------------------
 
 def register_series(image_series: np.ndarray, ref_image: np.ndarray,
@@ -188,7 +188,7 @@ def extract_masked_matrix(series: np.ndarray, mask: np.ndarray) -> Tuple[np.ndar
 
 
 # ----------------------------
-# ICA + selection + delay alignment
+#  ICA + selection + delay alignment
 # ----------------------------
 
 def run_ica(data_2d: np.ndarray, n_comp: int = 3, random_state: int = 0) -> Tuple[np.ndarray, np.ndarray]:
@@ -200,18 +200,7 @@ def run_ica(data_2d: np.ndarray, n_comp: int = 3, random_state: int = 0) -> Tupl
 
 def select_components_by_band_peak(S: np.ndarray, fs: float, band: Tuple[float, float], kmax: int = 2,
     freq_tol_hz: float = 0.05, ratio_thresh: float = 0.75) -> tuple[list[int], list[tuple[int, float, float]]]:
-    """
-    Select ICA components based on the FFT peak magnitude within a given frequency band.
-    For each component:
-      - compute FFT magnitude
-      - within `band`, find the maximum magnitude (peak) and its frequency
 
-    Selection rule:
-      - pick the component with the largest peak magnitude (principal)
-      - consider the 2nd component only if:
-          (a) its peak frequency is within `freq_tol_hz` of the principal peak frequency
-          (b) its peak magnitude >= ratio_thresh * principal_peak_magnitude
-    """
     T, n_comp = S.shape
     freqs = np.fft.rfftfreq(T, d=1.0 / fs)
 
@@ -365,6 +354,8 @@ def mean_abs_corr_to_ref(data_2d: np.ndarray, ref: np.ndarray) -> float:
     X = (data_2d - data_2d.mean(axis=0, keepdims=True)) / (np.std(data_2d, axis=0, keepdims=True) + 1e-6)
     c = np.mean(X * ref0[:, None], axis=0)
     return float(np.mean(np.abs(c)))
+
+
 # ----------------------------
 # Plotting
 # ----------------------------
@@ -553,7 +544,6 @@ def run_8_step_workflow(series: np.ndarray, fs: float, vent_band_hz: Tuple[float
     vent_chosen, vent_scores = select_components_by_band_peak(S_v1, fs, vent_band_hz,
         kmax=2, freq_tol_hz=0.05, ratio_thresh=0.75)
 
-    #print("Vent ICA#1 scores (k, f_hz, mag):", vent_scores[:3])
     print("Vent ICA#1 chosen components:", vent_chosen)
 
     if len(vent_chosen) == 2:
@@ -571,7 +561,6 @@ def run_8_step_workflow(series: np.ndarray, fs: float, vent_band_hz: Tuple[float
     perf_chosen, perf_scores = select_components_by_band_peak(S_q1, fs, perf_band_hz, kmax=2,
         freq_tol_hz=0.15, ratio_thresh=0.60)
 
-    #print("Perf ICA#1  scores (k, f_hz, mag):", perf_scores[:3])
     print("Perf ICA#1 chosen components:", perf_chosen)
 
     k_q_ref_a = perf_chosen[0]
@@ -675,13 +664,13 @@ def run_8_step_workflow(series: np.ndarray, fs: float, vent_band_hz: Tuple[float
     # -------------------------
     S_v2, A_v2 = run_ica(vent_aligned, n_comp=3, random_state=random_state)
     vent2_chosen, vent2_scores = select_components_by_band_peak(S_v2, fs, vent_band_hz, kmax=1, freq_tol_hz=0.05, ratio_thresh=0.75)
-    #print("Vent ICA#2 scores (k, f_hz, mag):", vent2_scores[:3])
+
     print("Vent ICA#2 chosen components:", vent2_chosen)
     k_v_true = vent2_chosen[0]
 
     S_q2, A_q2 = run_ica(perf_aligned, n_comp=3, random_state=random_state)
     perf2_chosen, perf2_scores = select_components_by_band_peak(S_q2, fs, perf_band_hz, kmax=1, freq_tol_hz=0.15, ratio_thresh=0.75)
-    #print("Perf ICA#2 scores (k, f_hz, mag):", perf2_scores[:3])
+
     print("Perf ICA#2 chosen components:", perf2_chosen)
     k_q_true = perf2_chosen[0]
 
@@ -776,6 +765,8 @@ def make_synthetic_mri_series(T: int = 500, Y: int = 96, X: int = 96, fs: float 
     truth = {"t": t, "vent_sig": vent_sig, "perf_sig": perf_sig, "nuisance": nuisance}
 
     return series, truth
+
+
 
 
 if __name__ == "__main__":
