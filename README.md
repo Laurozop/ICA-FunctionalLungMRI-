@@ -1,7 +1,4 @@
-# ICA-FunctionalLungMRI-
-Python simulation illustrating an ICA-based workflow for functional lung MRI ventilation and perfusion imaging, as used in our manuscript.
-
-# ICA demo for functional lung MRI (ventilation/perfusion-weighted)
+# ICA demo for Functional Lung MRI (ventilation/perfusion-weighted)
 
 This repository contains a **simulation-based, minimal demonstration** of the workflow used in our manuscript on applying Independent Component Analysis (ICA) to functional lung MRI for obtaining ventilation- and perfusion-weighted images.
 
