@@ -51,12 +51,10 @@ except Exception:
 def register_series(image_series: np.ndarray, ref_image: np.ndarray,
                                      params: Optional[dict] = None,) -> np.ndarray:
     """
-    Registers each frame to ref_image using ANTsPy.
-    Fallback:
-        If ANTsPy isn't available, returns the input unchanged.
+    Registers each frame to ref_image using ANTsPy
     """
     if not _HAVE_ANTS:
-        print("[register_series] ANTsPy not available -> using identity registration.")
+        print(" ANTsPy isn't available -> using identity registration.")
         return image_series
 
     if params is None:
@@ -91,7 +89,7 @@ def register_series(image_series: np.ndarray, ref_image: np.ndarray,
 
 def make_two_ellipse_lung_mask(shape: Tuple[int, int]) -> np.ndarray:
     """
-        Creates a simple "two-lung" binary mask using two ellipses.
+    Creates a simple "two-lung" binary mask using two ellipses.
     """
     Y, X = shape
     yy, xx = np.mgrid[0:Y, 0:X]
@@ -110,15 +108,14 @@ def make_two_ellipse_lung_mask(shape: Tuple[int, int]) -> np.ndarray:
 
 def draw_lung_mask_napari(ref_image: np.ndarray) -> np.ndarray:
     """
-        Draw a lung ROI mask using Napari labels
+    Draw a lung ROI mask using Napari labels
         - Paint label 1 = lungs
         - Press 'g' to region-grow from newly painted pixels (flood fill) to speed up drawing
         - Close Napari to finalize
-    Fallback:
-        If Napari isn't available, it returns an automatic two-ellipse mask.
+   !! If mask isn't available, it returns an automatic two-ellipse mask.
     """
     if not _HAVE_NAPARI:
-        print("[mask] Napari not available -> using automatic two-ellipse lung mask.")
+        print("mask not available -> using automatic two-ellipse lung mask.")
         return make_two_ellipse_lung_mask(ref_image.shape)
 
     img = ref_image.astype(np.float32)
@@ -241,7 +238,7 @@ def estimate_tau_from_phase_at_f0(data_2d: np.ndarray, fs: float, band_hz: tuple
     ref: np.ndarray,) -> tuple[np.ndarray, float]:
     """
     Estimate per-voxel delay tau (seconds) relative to `ref`
-    from phase difference at dominant frequency f0 (within band).
+    from phase difference at dominant frequency f0 
     """
     T, N = data_2d.shape
     t = np.arange(T, dtype=np.float32) / fs
@@ -363,7 +360,7 @@ def mean_abs_corr_to_ref(data_2d: np.ndarray, ref: np.ndarray) -> float:
 def plot_components(S, A, comp_indices, flat_idx, shape, fs, band, title, cmap="hot", theme: str|None=None,
                     raw_global = None, same_scale=True, sort_by="recon_amp", show_only_positive_freq=True):
     """
-        Displays ICA components in a diagnostic plot:
+    Displays ICA components in a diagnostic plot:
             col 1: spatial map (mixing weights in image space)
             col 2: spectrum magnitude (FFT)
             col 3: timecourse
